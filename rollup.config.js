@@ -4,6 +4,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 import postcss from 'rollup-plugin-postcss';
 import pkg from './package.json';
+const cache = true;
 
 function toRecordPath(path) {
   return path
@@ -177,6 +178,7 @@ let configs = [
 
 if (process.env.BROWSER_ONLY) {
   configs = {
+    cache,
     input: './src/index.ts',
     plugins: [
       resolve(),

@@ -3,7 +3,6 @@ import * as path from 'path';
 import * as EventEmitter from 'events';
 import * as puppeteer from 'puppeteer';
 import { eventWithTime } from '../src/types';
-const WebSocket = require('websocket').w3cwebsocket;
 
 process
         .on('uncaughtException', error => {
@@ -199,9 +198,9 @@ function write(event: eventWithTime) {
 
         const pages = await browser.pages();
         const page = pages[0];
-        await page.goto(url, {
+        await page.goto(url/*, {
                 waitUntil: 'domcontentloaded',
-        });
+        }*/);
         await page.exposeFunction('_replLog', (event: eventWithTime) => {
                 events.push(event);
                 write(event);

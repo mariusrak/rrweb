@@ -1,8 +1,30 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as EventEmitter from 'events';
 import * as puppeteer from 'puppeteer';
 import { eventWithTime } from '../src/types';
+var http = require("http");
+var WebSocketServer = require("websocket").server;
+
+var server = http.createServer(function (request, response) {
+});
+server.listen(1337, function () {
+        console.log("listening at ", new Date());
+});
+const wsServer = new WebSocketServer({
+        httpServer: server
+        //autoAcceptConnections: true
+});
+
+wsServer.on("request", function (request) {
+        var connection = request.accept(null, request.origin);
+        console.log("request at ", new Date());
+
+        connection.on("message", function (message) {
+                if (message.type === "utf8") {
+                        console.log(message.utf8Data);
+                }
+        });
+});
 
 process
         .on('uncaughtException', error => {
@@ -61,116 +83,6 @@ function saveEvents(events: eventWithTime[]) {
 
         console.log(`Saved at ${tempFolder} -> ${time}`);
 }
-
-/*
-var connection: WebSocket;
-var toSend: eventWithTime[] = [];
-
-function send(event: eventWithTime) {
-        if (connection === undefined || connection.readyState > 1) {
-                console.info('socket close', connection === undefined, connection && connection.readyState < 1);
-                openRRsocket();
-                toBuffer(event);
-                return;
-        }
-        try {
-                connection.send(JSON.stringify(event));
-                console.log("Sent: ", event);
-        } catch (err) {
-                if (typeof connection === 'undefined' || connection.readyState !== 0) {
-                        openRRsocket();
-                }
-                toBuffer(event);
-                console.log('ErSn: ', err);
-        }
-}
-function toBuffer(event: eventWithTime) {
-        toSend.push(event);
-        console.log("Buff: ", event);
-}
-function flush() {
-        console.info('flushing');
-        while (1) {
-                var event = toSend.shift();
-                if (!event) {
-                        break;
-                }
-                send(event);
-        }
-}
-function openRRsocket() {
-        if (connection !== undefined && connection.readyState === 1) {
-                console.info('socket opening');
-                return;
-        }
-        var newConn = new WebSocket('ws://127.0.0.1:1337');
-        newConn.onopen = function () {
-                console.info('socket open');
-                flush();
-        };
-        newConn.onerror = function (error: Object) {
-                console.error('socket error', error);
-        };
-        connection = newConn;
-};*/
-
-
-
-
-
-
-
-
-
-
-/*
-let events: eventWithTime[] = [];
-var connection: WebSocket;
-var sentEvent = -1;
-function openRRsocket() {
-        if (connection !== undefined && connection.readyState <= 1) {
-                console.info('socket opening');
-                return;
-        }
-        var newConn = new WebSocket('ws://127.0.0.1:1337');
-        newConn.onopen = function () {
-                console.info('socket open');
-                flush();
-        };
-        newConn.onerror = function (error: Object) {
-                console.error('socket error', error);
-        };
-        connection = newConn;
-};
-function flush() {
-        if (connection === undefined || connection.readyState > 1) {
-                console.info('socket close');
-                openRRsocket();
-                return;
-        }
-        if (sentEvent === events.length - 1) {
-                return;
-        }
-        try {
-                const event = events[sentEvent + 1];
-                connection.send(JSON.stringify(event));
-                console.log("Sent: %d/%d", sentEvent, events.length);//event);
-                ++sentEvent;
-                flush();
-        } catch (err) {
-                if (typeof connection === 'undefined' || connection.readyState !== 0) {
-                        openRRsocket();
-                } else if (connection) {
-                        console.log("ErSn: %d/%d", sentEvent, events.length, connection, err);
-                }
-                return;
-        }
-}
-
-
-
-*/
-
 var writeStream = fs.createWriteStream(path.join(__dirname, '../rec'), {
         flags: 'a'
 });

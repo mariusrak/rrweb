@@ -5,6 +5,7 @@
   "scripts": {
     "test": "npm run bundle:browser && cross-env TS_NODE_CACHE=false TS_NODE_FILES=true mocha -r ts-node/register test/**/*.test.ts",
     "rects": "cross-env TS_NODE_CACHE=false TS_NODE_FILES=true ts-node scripts/repl.ts",
+    "serve": "node scripts/serve.js",
     "rec": "node scripts/repl.js",
     "repl": "npm run bundle:browser && cross-env TS_NODE_CACHE=false TS_NODE_FILES=true ts-node scripts/repl.ts",
     "bundle:browser": "cross-env BROWSER_ONLY=true rollup --config",

@@ -4,24 +4,22 @@ var puppeteer = require("puppeteer");
 
 const events = [];
 const url = process.argv[2].match(/\w+\:\/\//) ? process.argv[2] : 'http://' + process.argv[2];
-const replLog = (event) => {
-        events.push(event);
-        writeStream.write(JSON.stringify(event) + "\n");
-};
 const bundlePath = path.resolve(__dirname, '../dist/rrweb.min.js');
 const code = fs.readFileSync(bundlePath, 'utf8');
 const injectCode = `;${code}
+        window.__RR__windowProps = ['screenX', 'screenY', 'outerHeight', 'outerWidth', 'innerHeight', 'innerWidth'];
         window.__IS_RECORDING__ = true
         rrweb.record({
-                emit: event => window._replLog(event)
+                emit: event => window._replLog({...event, _windowProps: window.__RR__windowProps.reduce((w, p) => ({ ...w, [p]: window[p] }), {})})
         });
 `;
-const tempFolder = path.join(__dirname, '../temp');
+const recordingsFolder = path.join(__dirname, '../recordings');
 const time = new Date().toISOString().replace(/[-|:]/g, '_').replace(/\..+/, '');
-const storingFile = type => path.resolve(tempFolder, `${time}__${type}`);
+const normalizedUrl = url.replace(/^\w+\:\/\/([^\/]+).*/, '$1');
+const storingFile = type => path.resolve(recordingsFolder, `${time}__${normalizedUrl}__${type}`);
 
-if (!fs.existsSync(tempFolder)) {
-        fs.mkdirSync(tempFolder);
+if (!fs.existsSync(recordingsFolder)) {
+        fs.mkdirSync(recordingsFolder);
 }
 const writeStream = fs.createWriteStream(storingFile(`conti.rec`), { flags: 'a' });
 
@@ -68,7 +66,10 @@ function saveEvents(events) {
         const pages = await browser.pages();
         const page = pages[0];
         await page.goto(url);
-        await page.exposeFunction('_replLog', replLog);
+        await page.exposeFunction('_replLog', event => {
+                events.push(event);
+                writeStream.write(JSON.stringify(event) + "\n");
+        });
         await page.evaluate(injectCode);
         page.on('framenavigated', async () => {
                 const isRecording = await page.evaluate('window.__IS_RECORDING__');

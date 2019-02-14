@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+        <head>
+                <meta charset="UTF-8">
+                <title>Player</title>
+                <link rel="stylesheet" href="./rrweb-player.css">
+                <!-- <script src="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/index.js"></script> -->
+                <script src="./rrplayer.js"></script>
+                
+                <script>
+                        'use strict';
+                        var FR = new FileReader();
+                        var textToArr = res => res.split(/\n/).reduce((arr, row) => {
+                                try {
+                                        var e = JSON.parse(row);
+                                        return [...arr, e];
+                                } catch(e){
+                                        return arr;
+                                }
+                        }, []);
+                        FR.onload = function(e) {
+                                var events;
+                                try {
+                                        events = JSON.parse(e.target.result);
+                                } catch(err){
+                                        events = textToArr(e.target.result);
+                                }
+                                console.log(events);
+                                new rrwebPlayer({
+                                        target: document.body,
+                                        data: { events },
+                                });
+                        };
+                        FR.onerror = function(e){
+                                console.log(e);
+                        }
+                        FR.onabort = function(e){
+                                console.log(e);
+                        }
+
+                        fetch('http://127.0.0.1:1337')
+                                .then(res => res.blob())
+                                .then(res => FR.readAsText(res));
+                </script>
+        </head>
+        <body>
+                
+        </body>
+</html> 

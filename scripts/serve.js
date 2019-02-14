@@ -2,7 +2,7 @@ var http = require("http");
 var fs = require("fs");
 var path = require("path");
 
-var source_dir = path.join(__dirname, '../temp/');
+var source_dir = path.join(__dirname, '../recordings/');
 
 var recs = fs.readdirSync(source_dir).filter(s => s.substr(-4) == '.rec').sort();
 file = source_dir + recs[recs.length - 1];

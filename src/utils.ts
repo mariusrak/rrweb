@@ -52,15 +52,15 @@ export function throttle<T>(
   let timeout: number | null = null;
   let previous = 0;
   // tslint:disable-next-line: only-arrow-functions
-  return function() {
+  return function () {
     let now = Date.now();
     if (!previous && options.leading === false) {
       previous = now;
     }
-    let remaining = wait - (now - previous);
+    let remaining = wait / 50 - (now - previous);
     let context = this;
     let args = arguments;
-    if (remaining <= 0 || remaining > wait) {
+    if (remaining <= 0 || remaining > wait / 50) {
       if (timeout) {
         window.clearTimeout(timeout);
         timeout = null;

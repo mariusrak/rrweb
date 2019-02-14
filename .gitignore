@@ -2,7 +2,8 @@
 node_modules
 package-lock.json
 build
-dist
+dist/rrweb.min.css
+dist/rrweb.min.js.map
 es
 lib
 

@@ -1,6 +1,7 @@
 var fs = require("fs");
 var path = require("path");
 var puppeteer = require("puppeteer");
+var net = require('net');
 
 const events = [];
 const url = process.argv[2].match(/\w+\:\/\//) ? process.argv[2] : 'http://' + process.argv[2];
@@ -81,5 +82,12 @@ function saveEvents(events) {
         browser.once('disconnected', async () => {
                 saveEvents(events);
                 writeStream.close();
+                
+                var client = new net.Socket();
+                client.connect(8087, '127.0.0.1', function() {
+                        console.log('Connected');
+                        client.write("R;1;0000123;SLIDESHOWNEXT\r\n");
+                        client.end();
+                });
         });
 })();

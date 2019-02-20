@@ -67,6 +67,9 @@ function saveEvents(events) {
         const pages = await browser.pages();
         const page = pages[0];
         await page.goto(url);
+        if(process.argv[3]){
+                setTimeout(() => browser.close(), parseInt(process.argv[3], 10)*1000);
+        }
         await page.exposeFunction('_replLog', event => {
                 events.push(event);
                 writeStream.write(JSON.stringify(event) + "\n");
@@ -85,7 +88,6 @@ function saveEvents(events) {
                 
                 var client = new net.Socket();
                 client.connect(8087, '127.0.0.1', function() {
-                        console.log('Connected');
                         client.write("R;1;0000123;SLIDESHOWNEXT\r\n");
                         client.end();
                 });

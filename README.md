@@ -4,7 +4,7 @@ Usage:
 1. download zip of `recorder` branch
 2. unzip
 3. `npm install`
-4. `npm run rec {url}`
+4. `npm run rec {url} {optional_exposure_time_in_sec}`
 5. after close see `./recordings/` for last recording
 
 A recording is named by date and url stored as:

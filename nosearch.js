@@ -1,0 +1,2 @@
+Array.from(document.querySelectorAll(".header-search__search input")).forEach(i=>i.onfocus=(e)=>{e.preventDefault();i.blur();alert('Prepáčte ale vyhľadávanie je z dôvodu modernizácie vypnuté.');return false;})
+Array.from(document.querySelectorAll(".moduletable-search input")).forEach(i=>i.onfocus=(e)=>{e.preventDefault();i.blur();alert('Vyhľadávanie je z technických príčin dočasne nedostupné. Ospravedlňujeme sa za vzniknuté komplikácie.');return false;})

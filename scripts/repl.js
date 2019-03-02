@@ -66,8 +66,15 @@ function saveEvents(events) {
 
         const pages = await browser.pages();
         const page = pages[0];
+        if(process.argv[4]){
+                var customcode = fs.readFileSync(path.resolve(__dirname, '../'+process.argv[4]+'.js'), 'utf8');
+                page.evaluate(customcode);
+                page.on('framenavigated', async () => {
+                        page.evaluate(customcode);
+                });
+        }
         await page.goto(url);
-        if(process.argv[3]){
+        if(process.argv[3] && parseInt(process.argv[3],10)){
                 setTimeout(() => browser.close(), parseInt(process.argv[3], 10)*1000);
         }
         await page.exposeFunction('_replLog', event => {

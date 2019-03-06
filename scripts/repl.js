@@ -73,6 +73,16 @@ function saveEvents(events) {
                         page.evaluate(customcode);
                 });
         }
+        if(process.argv[5]){
+                var customcss = fs.readFileSync(path.resolve(__dirname, '../'+process.argv[5]+'.css'), 'utf8');
+                page.addStyleTag({content: customcss});
+                page.on('response', async () => {
+                        page.addStyleTag({content: customcss});
+                });
+                page.on('load', async () => {
+                        page.addStyleTag({content: customcss});
+                });
+        }
         await page.goto(url);
         if(process.argv[3] && parseInt(process.argv[3],10)){
                 setTimeout(() => browser.close(), parseInt(process.argv[3], 10)*1000);

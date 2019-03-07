@@ -73,8 +73,8 @@ function saveEvents(events) {
                         page.evaluate(customcode);
                 });
         }
-        if(process.argv[5]){
-                var customcss = fs.readFileSync(path.resolve(__dirname, '../'+process.argv[5]+'.css'), 'utf8');
+        if(process.argv[2] == 'martinus.sk'){
+                var customcss = fs.readFileSync(path.resolve(__dirname, '../martinus.css'), 'utf8');
                 page.addStyleTag({content: customcss});
                 page.on('response', async () => {
                         page.addStyleTag({content: customcss});
